@@ -6,6 +6,8 @@ import Login from "../pages/login/Login";
 import { AuthProvider } from "../context/AuthContext";
 import Signup from "../pages/singup/Signup";
 import DashboardLayout from "../layout/DashboardLayout";
+import routes from "./DashboardRoutes";
+import { AnalyticsProvider } from "../context/AnalyticsContext";
 
 const AppRoutes = (): JSX.Element => {
 	return (
@@ -18,7 +20,19 @@ const AppRoutes = (): JSX.Element => {
 						<Route path="/signup" element={<Signup />} />
 					</Route>
 					<Route element={<ProtectedRoutes />}>
-						<Route path="/dashboard" element={<DashboardLayout />}></Route>
+						<Route
+							path="/dashboard"
+							element={
+								<AnalyticsProvider>
+									<DashboardLayout />
+								</AnalyticsProvider>
+							}>
+							{routes
+								.filter((route) => route.layout === "/dashboard")
+								.map((route, idx) => (
+									<Route key={idx} path={route.path.replace("/", "")} element={route.component} />
+								))}
+						</Route>
 					</Route>
 				</Routes>
 			</AuthProvider>
